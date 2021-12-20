@@ -3,19 +3,26 @@ import javafx.scene.effect.DisplacementMap;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * Основной класс программы
+ */
 public class Sample01 {
 
-    public static char[][] map;
-    public static final int SIZE = 5;
-    public static final int DOTS_TO_WIN = 4;
+    public static char[][] map; // Массив для игрового поля
+    public static final int SIZE = 5; // Размерность игрового поля
+    public static final int DOTS_TO_WIN = 4; // Количество знаков для выигрыша
+    public static int dotsToWinForAi = DOTS_TO_WIN - 1; // Количество знаков для выигрыша для продвинутого компьютера в отношении человека
 
-    public static final char DOT_EMPTY = '♦';
-    public static final char DOT_X = 'X';
-    public static final char DOT_O = 'O';
+    public static final char DOT_EMPTY = '♦'; // Символ пустой клетки
+    public static final char DOT_X = 'X'; // Символ игрока
+    public static final char DOT_O = 'O'; // Символ компьютера
 
-    public static Scanner scanner = new Scanner(System.in);
-    public static Random random = new Random();
+    public static Scanner scanner = new Scanner(System.in); // Сканер
+    public static Random random = new Random(); // Рандом
 
+    /**
+     * Инициализация игового поля
+     */
     public static void initMap() {
 
         map = new char[SIZE][SIZE];
@@ -27,6 +34,9 @@ public class Sample01 {
 
     }
 
+    /**
+     * Вывод игрового поля в консоль
+     */
     public static void printMap() {
 
         for (int i = 0; i <= SIZE; i++) {
@@ -48,6 +58,9 @@ public class Sample01 {
 
     }
 
+    /**
+     * Ход человека
+     */
     public static void humanTurn() {
 
         int x, y;
@@ -62,6 +75,12 @@ public class Sample01 {
 
     }
 
+    /**
+     * Проверка на пустая ли клетка и находиться ли она на поле
+     * @param x 1 координата
+     * @param y 2 координата
+     * @return результат проверки
+     */
     public static boolean isCellValid(int x, int y) {
 
         boolean result = false;
@@ -75,6 +94,9 @@ public class Sample01 {
         return result;
     }
 
+    /**
+     * Логика хода компьютера
+     */
     public static void aiTurn() {
 
         int x = -1, y = -1;
@@ -86,10 +108,10 @@ public class Sample01 {
                 if (isCellValid(j, i)) {
 
                     map[i][j] = DOT_X;
-                    if (!checkDot(DOT_X))
+                    if (!checkDot(DOT_X, dotsToWinForAi))
                         map[i][j] = DOT_EMPTY;
 
-                    if (checkDot(DOT_X)) {
+                    if (checkDot(DOT_X, dotsToWinForAi)) {
                         map[i][j] = DOT_EMPTY;
                         x = j;
                         y = i;
@@ -114,7 +136,13 @@ public class Sample01 {
         map[y][x] = DOT_O;
     }
 
-    public static boolean checkDot(char symbol) {
+    /**
+     * Метод для проверки условия выигрыша
+     * @param symbol Символ игрока для которого проверяем условие выигрыша
+     * @param DOTS_TO_WIN значение сколько нужно символов для выигрыша
+     * @return возвращаем результат проверки
+     */
+    public static boolean checkDot(char symbol, int DOTS_TO_WIN) {
 
         boolean flagToWin = false;
         int test = 0;
@@ -217,6 +245,11 @@ public class Sample01 {
         return flagToWin;
     }
 
+    /**
+     * Старый метод проверки выигрыша(для поля 3х3)
+     * @param symbol Символ игрока для которого проверяем условия выигрыша
+     * @return результат проверки
+     */
     public static boolean checkWin(char symbol) {
 
         if (map[0][0] == symbol && map[0][1] == symbol && map[0][2] == symbol) return true;
@@ -234,6 +267,10 @@ public class Sample01 {
 
     }
 
+    /**
+     *  Проверка есть ли на поле пустые клетки
+     * @return возвращаем результат проверки
+     */
     public static boolean isMapFull() {
 
         for (int i = 0; i < SIZE; i++) {
@@ -246,7 +283,10 @@ public class Sample01 {
     }
 
 
-
+    /**
+     * Точка входа в программу
+     * @param args
+     */
     public static void main(String[] args) {
 
         initMap();
@@ -254,7 +294,7 @@ public class Sample01 {
         while (true) {
             humanTurn();
             printMap();
-            if (checkDot(DOT_X)) {
+            if (checkDot(DOT_X, DOTS_TO_WIN)) {
                 System.out.println("Победил человек");
                 break;
             }
@@ -264,7 +304,7 @@ public class Sample01 {
             }
             aiTurn();
             printMap();
-            if (checkDot(DOT_O)) {
+            if (checkDot(DOT_O, DOTS_TO_WIN)) {
                 System.out.println("Победил компьютер");
                 break;
             }
